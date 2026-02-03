@@ -93,5 +93,14 @@
     "configManagement": "Config Management",
     "copyConfigDescription": "Generate current settings code and copy to clipboard, then overwrite src/settings.ts file",
     "resetConfigDescription": "Restore all settings to system default values"
+  },
+  "error": {
+    "pageNotFound": {
+      "title": "OOPS",
+      "subtitle": "This page is inaccessible",
+      "message": "Sorry, the page you visited does not exist",
+      "description": "Please confirm that the URL you entered is correct, or click the button below to return to the homepage",
+      "backToHome": "Back to Home"
+    }
   }
 }

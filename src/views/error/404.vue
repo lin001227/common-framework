@@ -1,14 +1,22 @@
 <template>
   <div class="wh-full mx-auto flex-center flex-col lg:flex-row">
-    <img class="min-w-[23.4375rem] sm:w-150" src="@/assets/images/404.svg" alt="404" />
+    <img
+      class="min-w-[23.4375rem] sm:w-150"
+      src="@/assets/images/404.svg"
+      :alt="t('error.pageNotFound.title')"
+    />
     <div class="w-75">
-      <div class="oops mb-5 text-[2rem] font-bold">OOPS</div>
-      <div class="info text-gray mb-7 text-[0.8125rem]">该页面无法访问</div>
-      <div class="headline mb-2.5 text-xl font-bold text-[#222]">抱歉，您访问的页面不存在</div>
-      <div class="info text-gray mb-7 text-[0.8125rem]">
-        请确认您输入的网址是否正确，或者点击下方按钮返回首页
+      <div class="oops mb-5 text-[2rem] font-bold">{{ t("error.pageNotFound.title") }}</div>
+      <div class="info text-gray mb-7 text-[0.8125rem]">{{ t("error.pageNotFound.subtitle") }}</div>
+      <div class="headline mb-2.5 text-xl font-bold text-[#222]">
+        {{ t("error.pageNotFound.message") }}
       </div>
-      <el-button round type="primary" class="btn h-9 w-28 mb-10" @click="back">返回首页</el-button>
+      <div class="info text-gray mb-7 text-[0.8125rem]">
+        {{ t("error.pageNotFound.description") }}
+      </div>
+      <el-button round type="primary" class="btn h-9 w-28 mb-10" @click="back">
+        {{ t("error.pageNotFound.backToHome") }}
+      </el-button>
     </div>
   </div>
 </template>
@@ -16,6 +24,7 @@
 <script setup lang="ts">
 defineOptions({ name: "Page404" });
 const router = useRouter();
+const { t } = useI18n();
 const back = () => router.push("/");
 </script>
 
