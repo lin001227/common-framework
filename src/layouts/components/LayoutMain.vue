@@ -30,7 +30,10 @@ const settingsStore = useSettingsStore();
 // 当前组件
 const wrapperMap = new Map<string, Component>();
 const currentComponent = (component: Component, route: RouteLocationNormalized) => {
-  if (!component) return;
+  if (!component) {
+    console.warn(`No component provided for route: ${route.path}`);
+    return h(Error404);
+  }
 
   const { fullPath: componentName } = route; // 使用路由路径作为组件名称
   let wrapper = wrapperMap.get(componentName);
@@ -40,10 +43,48 @@ const currentComponent = (component: Component, route: RouteLocationNormalized) 
       name: componentName,
       render: () => {
         try {
-          return h(component);
+          // 增强的组件渲染错误处理
+          const renderedComponent = h(component);
+
+          // 添加组件加载监控
+          if (process.env.NODE_ENV === "development") {
+            console.log(`Successfully rendered component for route: ${componentName}`);
+          }
+
+          return renderedComponent;
         } catch (error) {
-          console.error(`Error rendering component for route: ${componentName}`, error);
-          return h(Error404);
+          console.error(`Error rendering component for route: ${componentName}`, {
+            error,
+            componentType: typeof component,
+            routeInfo: {
+              path: route.path,
+              fullPath: route.fullPath,
+              name: route.name,
+              meta: route.meta,
+            },
+            timestamp: new Date().toISOString(),
+          });
+
+          // 返回更友好的错误页面
+          return h(
+            "div",
+            {
+              class: "component-error-page flex-center flex-col p-8",
+            },
+            [
+              h("div", { class: "text-2xl font-bold text-red-500 mb-4" }, "组件加载失败"),
+              h("div", { class: "text-gray-600 mb-4" }, `路径: ${route.path}`),
+              h("div", { class: "text-sm text-gray-500 mb-4" }, "请检查组件路径配置或联系管理员"),
+              h(
+                "el-button",
+                {
+                  type: "primary",
+                  onClick: () => window.location.reload(),
+                },
+                "刷新页面"
+              ),
+            ]
+          );
         }
       },
     };

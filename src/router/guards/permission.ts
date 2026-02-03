@@ -4,6 +4,7 @@ import router from "@/router";
 import { usePermissionStore, useUserStore } from "@/store";
 import { useTenantStoreHook } from "@/store/modules/tenant";
 import { isTenantEnabled } from "@/utils/tenant";
+import { debugRoute, debugUnmatchedRoute, routePerformance } from "@/utils/route-debugger";
 
 /**
  * 路由权限守卫
@@ -57,10 +58,43 @@ export function setupPermissionGuard() {
         return;
       }
 
-      // 路由 404 检查
+      // 路由匹配检查 - 改进的404检测逻辑
       if (to.matched.length === 0) {
+        // 使用调试工具记录未匹配的路由
+        debugUnmatchedRoute(to);
+
+        // 对于某些特殊情况，尝试重新生成路由
+        if (!permissionStore.isRouteGenerated) {
+          console.log("Dynamic routes not generated yet, attempting regeneration...");
+          try {
+            const dynamicRoutes = await permissionStore.generateRoutes();
+            dynamicRoutes.forEach((route: RouteRecordRaw) => {
+              router.addRoute(route);
+            });
+            // 重新检查路由匹配
+            const resolvedRoute = router.resolve(to);
+            if (resolvedRoute.matched.length > 0) {
+              next({ ...to, replace: true });
+              return;
+            }
+          } catch (regenError) {
+            console.error("Failed to regenerate routes:", regenError);
+          }
+        }
+
+        // 最终兜底：对于API相关的路径，可能需要特殊处理
+        if (to.path.startsWith("/api/") || to.path.includes("favicon")) {
+          console.log("Ignoring API/favicon route:", to.path);
+          next();
+          return;
+        }
+
+        // 真正的404情况
         next("/404");
         return;
+      } else {
+        // 路由匹配成功，记录调试信息
+        debugRoute(to);
       }
 
       // 动态标题

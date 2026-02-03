@@ -72,6 +72,13 @@ export const constantRoutes: RouteRecordRaw[] = [
       },
     ],
   },
+
+  // 通配符路由 - 捕获所有未匹配的路径
+  {
+    path: "/:pathMatch(.*)*",
+    component: () => import("@/views/error/401.vue"),
+    meta: { hidden: true },
+  },
 ];
 
 /**
