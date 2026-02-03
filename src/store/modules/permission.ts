@@ -12,7 +12,10 @@ const Layout = () => import("../../layouts/index.vue");
 /**
  * 验证生成的路由配置
  */
-function validateGeneratedRoutes(routes: RouteRecordRaw[]): { isValid: boolean; issues: string[] } {
+export function validateGeneratedRoutes(routes: RouteRecordRaw[]): {
+  isValid: boolean;
+  issues: string[];
+} {
   const issues: string[] = [];
 
   function validateRoute(route: RouteRecordRaw, path: string = ""): void {

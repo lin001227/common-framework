@@ -69,6 +69,30 @@ class RouteDebugger {
    * 记录路由未匹配情况
    */
   logUnmatchedRoute(route: RouteLocationNormalized) {
+    const debugInfo: RouteDebugInfo = {
+      timestamp: new Date().toISOString(),
+      path: route.path,
+      fullPath: route.fullPath,
+      matchedRoutes: [],
+      componentInfo: {
+        name: route.name as string,
+        path: route.path,
+        exists: false,
+      },
+      metadata: {
+        query: route.query,
+        params: route.params,
+        meta: route.meta,
+      },
+    };
+
+    this.debugLogs.push(debugInfo);
+
+    // 限制日志数量
+    if (this.debugLogs.length > this.MAX_LOGS) {
+      this.debugLogs.shift();
+    }
+
     console.warn("[Route Debugger] Unmatched route detected:", {
       path: route.path,
       fullPath: route.fullPath,
