@@ -5,9 +5,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --mode localhost",
     "dev:mock": "vite --mode mock",
-    "dev:localhost": "vite --mode localhost",
     "build": "vue-tsc --noEmit && vite build",
     "preview": "vite preview",
     "build-only": "vite build",

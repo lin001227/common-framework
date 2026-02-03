@@ -135,9 +135,9 @@
             <!-- 显示图标 -->
             <template v-else-if="col.templet === 'icon'">
               <template v-if="col.prop">
-                <template v-if="scope.row[col.prop].startsWith('el-icon-')">
+                <template v-if="/^[A-Z]/.test(scope.row[col.prop])">
                   <el-icon>
-                    <component :is="scope.row[col.prop].replace('el-icon-', '')" />
+                    <component :is="scope.row[col.prop]" />
                   </el-icon>
                 </template>
                 <template v-else>

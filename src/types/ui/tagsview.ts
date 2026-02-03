@@ -5,6 +5,7 @@
 export interface TagView {
   name: string;
   title: string;
+  titleEn?: string;
   path: string;
   fullPath: string;
   icon?: string;

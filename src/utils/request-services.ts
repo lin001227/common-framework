@@ -7,7 +7,7 @@ import { getServiceInstance, type ServiceConfig } from "./request-factory";
 /** 默认服务（通用接口） */
 const defaultServiceConfig: ServiceConfig = {
   name: "default",
-  baseURL: import.meta.env.VITE_APP_BASE_API,
+  baseURL: "/api",
 };
 
 /** SSO 单点登录服务 */

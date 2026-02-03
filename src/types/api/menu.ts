@@ -136,4 +136,6 @@ export interface Meta {
   roles?: string[];
   /** 路由title */
   title?: string;
+  /** 路由英文标题 */
+  titleEn?: string;
 }

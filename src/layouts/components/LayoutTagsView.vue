@@ -26,7 +26,7 @@
             })
           "
         >
-          {{ translateRouteTitle(tag.title) }}
+          <span class="tag-title">{{ translateRouteTitle(tag.title, tag.titleEn) }}</span>
         </el-tag>
       </div>
     </el-scrollbar>
@@ -142,6 +142,7 @@ const extractAffixTags = (routes: RouteRecordRaw[], basePath = "/"): TagView[] =
           fullPath,
           name: String(route.name || ""),
           title: route.meta.title || "no-name",
+          titleEn: route.meta.titleEn,
           affix: true,
           keepAlive: route.meta.keepAlive || false,
         });
@@ -180,6 +181,7 @@ const addCurrentTag = () => {
   tagsViewStore.addView({
     name: route.name as string,
     title: route.meta.title,
+    titleEn: route.meta.titleEn,
     path: route.path,
     fullPath: route.fullPath,
     affix: route.meta.affix || false,
@@ -199,6 +201,7 @@ const updateCurrentTag = () => {
       tagsViewStore.updateVisitedView({
         name: route.name as string,
         title: route.meta?.title || "",
+        titleEn: route.meta?.titleEn,
         path: route.path,
         fullPath: route.fullPath,
         affix: route.meta?.affix || false,
@@ -380,6 +383,13 @@ useContextMenuManager();
     white-space: nowrap;
   }
 }
+.tag-title {
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .contextmenu {
   position: absolute;
   z-index: 3000;

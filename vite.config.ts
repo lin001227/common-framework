@@ -52,12 +52,12 @@ function createProxyConfig(env: Record<string, string>) {
     };
   }
 
-  // 默认服务代理（最后匹配，匹配 /api 或 /dev-api）
-  if (env.VITE_APP_BASE_API && env.VITE_APP_API_URL) {
-    proxyConfig[env.VITE_APP_BASE_API] = {
+  // 默认服务代理（最后匹配，固定为 /api）
+  if (env.VITE_APP_API_URL) {
+    proxyConfig["/api"] = {
       changeOrigin: true,
       target: env.VITE_APP_API_URL,
-      rewrite: (path: string) => path.replace(new RegExp("^" + env.VITE_APP_BASE_API), ""),
+      rewrite: (path: string) => path.replace(/^\/api/, ""),
     };
   }
 

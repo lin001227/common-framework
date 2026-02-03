@@ -92,17 +92,14 @@ import variables from "@/styles/variables.module.scss";
 const MenuIcon = defineComponent({
   props: { icon: String },
   setup(props) {
-    const isElIcon = computed(() => props.icon?.startsWith("el-icon"));
-    const iconName = computed(() => props.icon?.replace("el-icon-", ""));
-
     return () => {
       if (!props.icon) {
         return h("div", { class: "i-svg:menu" });
       }
 
-      // Element Plus 图标
-      if (isElIcon.value) {
-        return h(ElIcon, null, () => h(resolveComponent(iconName.value!)));
+      // 检查是否为 Element Plus 图标（以大写字母开头）
+      if (props.icon && /^[A-Z]/.test(props.icon)) {
+        return h(ElIcon, null, () => h(resolveComponent(props.icon as string)));
       }
 
       // SVG 图标
@@ -149,6 +146,7 @@ const topMenuItems = computed(() => {
         meta: {
           ...route.meta,
           title: child.meta?.title || route.meta?.title,
+          titleEn: child.meta?.titleEn || route.meta?.titleEn,
           icon: child.meta?.icon || route.meta?.icon,
         },
       };

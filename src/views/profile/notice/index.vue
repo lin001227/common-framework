@@ -148,7 +148,7 @@ async function handleQuery() {
 function handleResetQuery() {
   queryFormRef.value?.resetFields();
   queryParams.pageNum = 1;
-  handleQuery();
+  // handleQuery();
 }
 
 async function handleReadNotice(id: string) {
@@ -163,7 +163,7 @@ async function handleReadNotice(id: string) {
 }
 
 onMounted(() => {
-  handleQuery();
+  // handleQuery();
 });
 </script>
 

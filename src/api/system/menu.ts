@@ -22,16 +22,39 @@ function getAuthHeaders() {
   };
 }
 
+function getModuleCode() {
+  return import.meta.env.VITE_APP_MODULE || "";
+}
+
 /**
  * 将后端菜单结构转换为前端路由结构
  */
 function transformBackendMenuToRoute(backendMenu: BackendMenuItem): RouteItem {
+  // 确定是否是叶子节点（无子菜单的菜单项）
+  const hasChildren = backendMenu.children && backendMenu.children.length > 0;
+
+  // 根据菜单类型和是否有子菜单来确定组件
+  let componentPath;
+  if (backendMenu.type === 0) {
+    // 目录类型
+    // 目录类型：如果有子菜单，可以使用 Layout；如果没有子菜单，也应设置为 Layout 但通常不会发生
+    componentPath = hasChildren ? "Layout" : "Layout";
+  } else {
+    // 菜单类型
+    // 菜单类型：如果有子菜单，不设置组件（仅作为路由容器）；否则设置具体组件
+    componentPath = hasChildren
+      ? undefined
+      : backendMenu.routingAddress
+        ? backendMenu.routingAddress.replace(/^\//, "")
+        : "error/404";
+  }
+
   const route: RouteItem = {
     path: backendMenu.routingAddress || "/",
     name: backendMenu.menuCode,
-    component: backendMenu.type === 0 ? "Layout" : backendMenu.routingAddress,
     meta: {
       title: backendMenu.menuName,
+      titleEn: backendMenu.menuNameEn,
       icon: backendMenu.icon,
       hidden: backendMenu.showValues === 1,
       keepAlive: true,
@@ -39,8 +62,13 @@ function transformBackendMenuToRoute(backendMenu: BackendMenuItem): RouteItem {
     children: [],
   };
 
+  // 只有当 componentPath 不为 undefined 时才设置组件
+  if (componentPath) {
+    route.component = componentPath;
+  }
+
   // 递归转换子菜单
-  if (backendMenu.children && backendMenu.children.length > 0) {
+  if (hasChildren && backendMenu.children) {
     route.children = backendMenu.children.map(transformBackendMenuToRoute);
   }
 
@@ -54,7 +82,7 @@ const MenuAPI = {
       url: "/sso/getMenuMessageList",
       method: "post",
       data: {
-        modularityAddress: "/sas/saspassport",
+        modularityAddress: getModuleCode(),
       },
       headers: getAuthHeaders(),
     });

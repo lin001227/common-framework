@@ -25,7 +25,14 @@
           <template v-if="onlyOneChild.meta">
             <MenuIcon :icon="onlyOneChild.meta.icon || item.meta?.icon" />
             <span v-if="onlyOneChild.meta.title" class="ml-1">
-              {{ translateRouteTitle(onlyOneChild.meta.title) }}
+              <span class="menu-title">
+                {{
+                  translateRouteTitle(
+                    onlyOneChild.meta.title as string,
+                    onlyOneChild.meta.titleEn as string
+                  )
+                }}
+              </span>
             </span>
           </template>
         </el-menu-item>
@@ -38,7 +45,9 @@
         <template v-if="item.meta">
           <MenuIcon :icon="item.meta.icon" />
           <span v-if="item.meta.title" class="ml-1">
-            {{ translateRouteTitle(item.meta.title) }}
+            <span class="menu-title">
+              {{ translateRouteTitle(item.meta.title as string, item.meta.titleEn as string) }}
+            </span>
           </span>
         </template>
       </template>
@@ -70,17 +79,14 @@ defineOptions({
 const MenuIcon = defineComponent({
   props: { icon: String },
   setup(props) {
-    const isElIcon = computed(() => props.icon?.startsWith("el-icon"));
-    const iconName = computed(() => props.icon?.replace("el-icon-", ""));
-
     return () => {
       if (!props.icon) {
         return h("div", { class: "i-svg:menu" });
       }
 
-      // Element Plus 图标
-      if (isElIcon.value) {
-        return h(ElIcon, null, () => h(resolveComponent(iconName.value!)));
+      // 检查是否为 Element Plus 图标（以大写字母开头）
+      if (props.icon && /^[A-Z]/.test(props.icon)) {
+        return h(ElIcon, null, () => h(resolveComponent(props.icon as string)));
       }
 
       // SVG 图标
@@ -169,6 +175,8 @@ function resolvePath(routePath: string) {
 /* 菜单图标统一样式 */
 .el-menu-item,
 .el-sub-menu__title {
+  display: flex;
+  align-items: center;
   .el-icon {
     width: 1em !important;
     margin-right: 0 !important;
@@ -181,6 +189,15 @@ function resolvePath(routePath: string) {
     height: 18px;
     font-size: 18px;
     color: currentcolor !important;
+  }
+
+  /* 菜单标题文本溢出处理 */
+  .menu-title {
+    flex: 1;
+    margin-left: 8px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 

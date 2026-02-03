@@ -6,6 +6,7 @@ import "vue-router";
 declare module "vue-router" {
   interface RouteMeta {
     title?: string;
+    titleEn?: string;
     icon?: string;
     hidden?: boolean;
     alwaysShow?: boolean;

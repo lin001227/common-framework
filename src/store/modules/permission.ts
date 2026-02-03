@@ -13,11 +13,19 @@ function resolveViewComponent(componentPath: string) {
     .trim()
     .replace(/^\/+/, "")
     .replace(/\.vue$/i, "");
-  return (
+
+  const component =
     modules[`../../views/${normalized}.vue`] ||
     modules[`../../views/${normalized}/index.vue`] ||
-    modules[`../../views/error/404.vue`]
-  );
+    modules[`../../views/error/404.vue`];
+
+  // 如果组件未定义，确保返回404页面
+  if (!component) {
+    console.warn(`Component not found: ${componentPath}, fallback to 404 page`);
+    return modules[`../../views/error/404.vue`];
+  }
+
+  return component;
 }
 
 export const usePermissionStore = defineStore("permission", () => {
